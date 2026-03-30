@@ -1,0 +1,16 @@
+---
+import Layout from './Layout.astro';
+import type { CollectionEntry } from 'astro:content';
+
+type Props = CollectionEntry<'blog'>['data'];
+
+const { title, description, pubDate } = Astro.props;
+---
+<Layout title={title} description={description}>
+  <article>
+    <h1>{title}</h1>
+    <p>Published on: {new Date(pubDate).toDateString()}</p>
+    <hr/>
+    <slot />
+  </article>
+</Layout>
