@@ -1,17 +1,34 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import TimelineItem from '../components/TimelineItem.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Rahul Sannapureddy | Personal Website">
+	<section class="hero">
+		<h1>Rahul Sannapureddy</h1>
+		<p class="subtitle">CS Student at IIT Guwahati</p>
+		<p>Passionate about building efficient systems and elegant software.</p>
+	</section>
+
+	<section class="timeline">
+		<h2>Timeline</h2>
+		<TimelineItem 
+			date="2026" 
+			title="Launched Personal Website" 
+			description="Built with Astro and Vanilla CSS." 
+		/>
+		<TimelineItem 
+			date="2022" 
+			title="Started at IIT Guwahati" 
+			description="Pursuing B.Tech in Computer Science and Engineering." 
+		/>
+	</section>
+</Layout>
+
+<style>
+	.hero { padding: 4rem 0; }
+	h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+	.subtitle { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 1rem; }
+	.timeline { padding: 2rem 0; }
+	h2 { margin-bottom: 2rem; }
+</style>

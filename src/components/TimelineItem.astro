@@ -1,0 +1,25 @@
+---
+interface Props {
+	date: string;
+	title: string;
+	description: string;
+}
+
+const { date, title, description } = Astro.props;
+---
+<div class="timeline-item">
+	<div class="date">{date}</div>
+	<div class="content">
+		<h3>{title}</h3>
+		<p>{description}</p>
+	</div>
+</div>
+
+<style>
+	.timeline-item { display: flex; gap: 2rem; margin-bottom: 2rem; position: relative; }
+	.timeline-item::before { content: ""; position: absolute; left: 5rem; top: 0; bottom: -2rem; width: 1px; background: var(--border); }
+	.date { width: 4rem; text-align: right; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted); }
+	.content { flex: 1; padding-left: 1rem; }
+	h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+	p { color: var(--text-muted); }
+</style>
