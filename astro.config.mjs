@@ -1,5 +1,8 @@
-// @ts-check
 import { defineConfig } from 'astro/config';
 
-// https://astro.build/config
-export default defineConfig({});
+export default defineConfig({
+  // Use your exact GitHub URL
+  site: 'https://RahulSannapureddy.github.io',
+  // For username.github.io repos, base must be '/'
+  base: '/', 
+});
