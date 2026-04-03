@@ -7,4 +7,4 @@
 - [x] Task 5: Homepage with Timeline
 - [x] Task 6: Projects Page
 - [x] Task 7: Blog Listing and Post Pages
-- [ ] Task 8: Final Polish and Build
+- [x] Task 8: Final Polish and Build
