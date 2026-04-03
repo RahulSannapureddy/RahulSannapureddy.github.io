@@ -1,0 +1,40 @@
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Rahul Sannapureddy</p>
+    <div class="links">
+      <a href="https://github.com/RahulSannapureddy" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="#">LinkedIn</a>
+      <a href="mailto:rahul.sannapureddy@gmail.com">Email</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    margin-top: 4rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  a {
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+  }
+  a:hover {
+    color: var(--accent);
+  }
+</style>

@@ -1,0 +1,43 @@
+<nav>
+  <div class="container">
+    <a href="/" class="logo">RS</a>
+    <div class="links">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/blog">Blog</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  nav {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--accent);
+  }
+  .links {
+    display: flex;
+    gap: 2rem;
+  }
+  a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  a:hover {
+    color: var(--accent);
+  }
+</style>
