@@ -18,6 +18,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Install, build, and upload with Astro
         uses: withastro/action@v3
+        with:
+          # This line fixes your current error
+          node-version: 22
 
   deploy:
     needs: build
