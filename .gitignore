@@ -2,37 +2,26 @@ Agents.md
 GEMINI.md
 
 # Dependencies
-
 node_modules/
 
-
-
 # Build output
-
 dist/
-
 .astro/
 
-
-
 # Environment variables
-
 .env
-
 .env*.local
-
-
+.env.production
 
 # Logs
-
 npm-debug.log*
-
 yarn-debug.log*
-
 yarn-error.log*
-
-
+pnpm-debug.log*
 
 # System files
-
 .DS_Store
+
+# Jetbrains setting folder
+.idea/
+.superpowers/

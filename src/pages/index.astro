@@ -1,14 +1,17 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import { Image } from 'astro:assets';
-import placeholder from '../assets/placeholder.svg';
+
 ---
 
-<Layout 
-  title="Home"
-  description="The personal portfolio of a backend-focused CS student with a passion for systems architecture."
->
-  <h1>Welcome, Systems Architect</h1>
-  <p>This is your minimalist, terminal-esque portfolio. The design system is in place.</p>
-  <Image src={placeholder} alt="Placeholder image" format="webp" loading="lazy" />
-</Layout>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Astro</title>
+	</head>
+	<body>
+		<h1>Astro</h1>
+	</body>
+</html>
