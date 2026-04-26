@@ -8,3 +8,4 @@
 - [x] Task 6: Projects Page
 - [x] Task 7: Blog Listing and Post Pages
 - [x] Task 8: Final Polish and Build
+- [x] Task 9: Add Indexer Project and fix project detail routing
