@@ -1,0 +1,1277 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.github/
+  workflows/
+    deploy.yml
+docs/
+  superpowers/
+    plans/
+      2026-04-03-personal-website-implementation.md
+    specs/
+      2026-04-03-personal-website-design.md
+    tasks.md
+    todos.md
+public/
+  favicon.ico
+  favicon.svg
+src/
+  components/
+    Footer.astro
+    Navigation.astro
+    ProjectCard.astro
+    TimelineItem.astro
+  content/
+    blog/
+      hello-world.md
+    projects/
+      placeholder.md
+  layouts/
+    Layout.astro
+  pages/
+    blog/
+      [...slug].astro
+      index.astro
+    projects/
+      index.astro
+    index.astro
+  styles/
+    global.css
+  content.config.ts
+.gitignore
+.nojekyll
+astro.config.mjs
+package.json
+README.md
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path=".github/workflows/deploy.yml">
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install, build, and upload with Astro
+        uses: withastro/action@v3
+        with:
+          # This line fixes your current error
+          node-version: 22
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+</file>
+
+<file path="docs/superpowers/plans/2026-04-03-personal-website-implementation.md">
+# Personal Website Implementation Plan
+
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+
+**Goal:** Build a minimalist, timeline-based personal website for Rahul Sannapureddy using Astro and Vanilla CSS.
+
+**Architecture:** A multi-page Astro site with content managed via Markdown collections. The homepage features a vertical timeline of milestones, while dedicated pages handle project listings and blog posts.
+
+**Tech Stack:** Astro, TypeScript, Vanilla CSS, Markdown.
+
+---
+
+### Task 1: Initialize Astro Project
+
+**Files:**
+- Create: `package.json`
+- Create: `astro.config.mjs`
+- Create: `tsconfig.json`
+
+- [ ] **Step 1: Scaffold Astro project**
+
+Run: `npm create astro@latest . -- --template minimal --typescript strict --install --no-git`
+(Note: Using existing directory, so `--template minimal` is safest to avoid overwriting too much, though we've already cleared most things.)
+
+- [ ] **Step 2: Verify installation**
+
+Run: `npm run dev` (in background) and check if it starts.
+Expected: Astro dev server starts on port 4321.
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add package.json package-lock.json astro.config.mjs tsconfig.json
+git commit -m "chore: initialize astro project"
+```
+
+### Task 2: Global Styles and Base Layout
+
+**Files:**
+- Create: `src/styles/global.css`
+- Create: `src/layouts/Layout.astro`
+
+- [ ] **Step 1: Define global CSS variables and reset**
+
+`src/styles/global.css`:
+```css
+:root {
+  --bg: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --accent: #2563eb;
+  --border: #eeeeee;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+```
+
+- [ ] **Step 2: Create base Layout component**
+
+`src/layouts/Layout.astro`:
+```astro
+---
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{title}</title>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/styles/global.css src/layouts/Layout.astro
+git commit -m "feat: add global styles and base layout"
+```
+
+### Task 3: Core Components (Navigation & Footer)
+
+**Files:**
+- Create: `src/components/Navigation.astro`
+- Create: `src/components/Footer.astro`
+- Modify: `src/layouts/Layout.astro`
+
+- [ ] **Step 1: Create Navigation component**
+
+`src/components/Navigation.astro`:
+```astro
+<nav>
+  <a href="/">Home</a>
+  <a href="/projects">Projects</a>
+  <a href="/blog">Blog</a>
+</nav>
+
+<style>
+  nav { display: flex; gap: 2rem; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+  a { text-decoration: none; color: var(--text); font-weight: 500; }
+  a:hover { color: var(--accent); }
+</style>
+```
+
+- [ ] **Step 2: Create Footer component**
+
+`src/components/Footer.astro`:
+```astro
+<footer>
+  <p>&copy; 2026 Rahul Sannapureddy</p>
+  <div class="links">
+    <a href="https://github.com/RahulSannapureddy">GitHub</a>
+    <a href="#">LinkedIn</a>
+    <a href="mailto:rahul.sannapureddy@gmail.com">Email</a>
+  </div>
+</footer>
+
+<style>
+  footer { margin-top: 4rem; padding: 2rem 0; border-top: 1px solid var(--border); display: flex; justify-content: space-between; }
+  .links { display: flex; gap: 1rem; }
+</style>
+```
+
+- [ ] **Step 3: Integrate components into Layout**
+
+- [ ] **Step 4: Commit**
+
+```bash
+git add src/components/Navigation.astro src/components/Footer.astro src/layouts/Layout.astro
+git commit -m "feat: add navigation and footer components"
+```
+
+### Task 4: Content Collections Setup
+
+**Files:**
+- Create: `src/content/config.ts`
+- Create: `src/content/projects/placeholder.md`
+- Create: `src/content/blog/hello-world.md`
+
+- [ ] **Step 1: Define collections in config.ts**
+
+`src/content/config.ts`:
+```typescript
+import { defineCollection, z } from 'astro:content';
+
+const blog = defineCollection({
+	type: 'content',
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		pubDate: z.coerce.date(),
+		updatedDate: z.coerce.date().optional(),
+		heroImage: z.string().optional(),
+	}),
+});
+
+const projects = defineCollection({
+	type: 'content',
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		pubDate: z.coerce.date(),
+		heroImage: z.string().optional(),
+		tags: z.array(z.string()).optional(),
+	}),
+});
+
+export const collections = { blog, projects };
+```
+
+- [ ] **Step 2: Add placeholder content**
+
+`src/content/blog/hello-world.md`:
+```markdown
+---
+title: "Hello World"
+description: "Welcome to my new personal website!"
+pubDate: "Apr 03 2026"
+---
+This is the first post on my new blog. Stay tuned for more updates!
+```
+
+`src/content/projects/placeholder.md`:
+```markdown
+---
+title: "Personal Website"
+description: "My personal portfolio built with Astro and Vanilla CSS."
+pubDate: "Apr 03 2026"
+tags: ["Astro", "TypeScript", "CSS"]
+---
+A minimalist, timeline-based website showcasing my journey as a CS student.
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/content/config.ts src/content/projects/placeholder.md src/content/blog/hello-world.md
+git commit -m "feat: set up content collections for projects and blog"
+```
+
+### Task 5: Homepage with Timeline
+
+**Files:**
+- Create: `src/components/TimelineItem.astro`
+- Modify: `src/pages/index.astro`
+
+- [ ] **Step 1: Create TimelineItem component**
+
+`src/components/TimelineItem.astro`:
+```astro
+---
+interface Props {
+	date: string;
+	title: string;
+	description: string;
+}
+
+const { date, title, description } = Astro.props;
+---
+<div class="timeline-item">
+	<div class="date">{date}</div>
+	<div class="content">
+		<h3>{title}</h3>
+		<p>{description}</p>
+	</div>
+</div>
+
+<style>
+	.timeline-item { display: flex; gap: 2rem; margin-bottom: 2rem; position: relative; }
+	.timeline-item::before { content: ""; position: absolute; left: 5rem; top: 0; bottom: -2rem; width: 1px; background: var(--border); }
+	.date { width: 4rem; text-align: right; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted); }
+	.content { flex: 1; padding-left: 1rem; }
+	h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+	p { color: var(--text-muted); }
+</style>
+```
+
+- [ ] **Step 2: Implement Homepage layout**
+
+`src/pages/index.astro`:
+```astro
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+import TimelineItem from '../components/TimelineItem.astro';
+---
+
+<Layout title="Rahul Sannapureddy | Personal Website">
+	<main>
+		<Navigation />
+		<section class="hero">
+			<h1>Rahul Sannapureddy</h1>
+			<p class="subtitle">CS Student at IIT Guwahati</p>
+			<p>Passionate about building efficient systems and elegant software.</p>
+		</section>
+
+		<section class="timeline">
+			<h2>Timeline</h2>
+			<TimelineItem 
+				date="2026" 
+				title="Launched Personal Website" 
+				description="Built with Astro and Vanilla CSS." 
+			/>
+			<TimelineItem 
+				date="2022" 
+				title="Started at IIT Guwahati" 
+				description="Pursuing B.Tech in Computer Science and Engineering." 
+			/>
+		</section>
+		<Footer />
+	</main>
+</Layout>
+
+<style>
+	main { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+	.hero { padding: 4rem 0; }
+	h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+	.subtitle { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 1rem; }
+	.timeline { padding: 2rem 0; }
+	h2 { margin-bottom: 2rem; }
+</style>
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/components/TimelineItem.astro src/pages/index.astro
+git commit -m "feat: implement homepage with vertical timeline"
+```
+
+### Task 6: Projects Page
+
+**Files:**
+- Create: `src/components/ProjectCard.astro`
+- Create: `src/pages/projects/index.astro`
+
+- [ ] **Step 1: Create ProjectCard component**
+
+`src/components/ProjectCard.astro`:
+```astro
+---
+interface Props {
+	title: string;
+	description: string;
+	tags?: string[];
+	slug: string;
+}
+
+const { title, description, tags, slug } = Astro.props;
+---
+<a href={`/projects/${slug}`} class="project-card">
+	<h3>{title}</h3>
+	<p>{description}</p>
+	{tags && <div class="tags">{tags.map(tag => <span>{tag}</span>)}</div>}
+</a>
+
+<style>
+	.project-card { display: block; padding: 1.5rem; border: 1px solid var(--border); text-decoration: none; color: inherit; transition: border-color 0.2s; }
+	.project-card:hover { border-color: var(--accent); }
+	h3 { margin-bottom: 0.5rem; }
+	p { color: var(--text-muted); font-size: 0.95rem; }
+	.tags { display: flex; gap: 0.5rem; margin-top: 1rem; }
+	.tags span { font-family: var(--font-mono); font-size: 0.8rem; background: #f0f0f0; padding: 0.2rem 0.5rem; border-radius: 4px; }
+</style>
+```
+
+- [ ] **Step 2: Implement Projects listing page**
+
+`src/pages/projects/index.astro`:
+```astro
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Projects | Rahul Sannapureddy">
+	<main>
+		<Navigation />
+		<section>
+			<h1>Projects</h1>
+			<div class="grid">
+				{projects.map(p => (
+					<ProjectCard 
+						title={p.data.title} 
+						description={p.data.description} 
+						tags={p.data.tags} 
+						slug={p.slug} 
+					/>
+				))}
+			</div>
+		</section>
+		<Footer />
+	</main>
+</Layout>
+
+<style>
+	main { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+	h1 { margin: 2rem 0; }
+	.grid { display: grid; gap: 1.5rem; }
+</style>
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/components/ProjectCard.astro src/pages/projects/index.astro
+git commit -m "feat: implement projects listing page"
+```
+
+### Task 7: Blog Listing and Post Pages
+
+**Files:**
+- Create: `src/pages/blog/index.astro`
+- Create: `src/pages/blog/[...slug].astro`
+
+- [ ] **Step 1: Implement Blog listing page**
+
+`src/pages/blog/index.astro`:
+```astro
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Blog | Rahul Sannapureddy">
+	<main>
+		<Navigation />
+		<section>
+			<h1>Blog</h1>
+			<ul class="posts">
+				{posts.map(p => (
+					<li>
+						<span class="date">{p.data.pubDate.toLocaleDateString()}</span>
+						<a href={`/blog/${p.slug}`}>{p.data.title}</a>
+					</li>
+				))}
+			</ul>
+		</section>
+		<Footer />
+	</main>
+</Layout>
+
+<style>
+	main { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+	h1 { margin: 2rem 0; }
+	.posts { list-style: none; }
+	li { display: flex; gap: 2rem; margin-bottom: 1rem; }
+	.date { font-family: var(--font-mono); color: var(--text-muted); min-width: 120px; }
+	a { text-decoration: none; color: inherit; font-weight: 500; }
+	a:hover { color: var(--accent); }
+</style>
+```
+
+- [ ] **Step 2: Implement Dynamic Blog Post page**
+
+`src/pages/blog/[...slug].astro`:
+```astro
+---
+import { type CollectionEntry, getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.slug },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content } = await post.render();
+---
+
+<Layout title={post.data.title}>
+	<main>
+		<Navigation />
+		<article>
+			<header>
+				<p class="date">{post.data.pubDate.toLocaleDateString()}</p>
+				<h1>{post.data.title}</h1>
+			</header>
+			<div class="prose">
+				<Content />
+			</div>
+		</article>
+		<Footer />
+	</main>
+</Layout>
+
+<style>
+	main { max-width: 800px; margin: 0 auto; padding: 0 1rem; }
+	article { padding: 2rem 0; }
+	.date { font-family: var(--font-mono); color: var(--text-muted); }
+	h1 { margin: 0.5rem 0 2rem; }
+	.prose { line-height: 1.8; }
+</style>
+```
+
+- [ ] **Step 3: Commit**
+
+```bash
+git add src/pages/blog/index.astro src/pages/blog/[...slug].astro
+git commit -m "feat: implement blog listing and post pages"
+```
+
+### Task 8: Final Polish and Build
+
+- [ ] **Step 1: Run build to verify**
+
+Run: `npm run build`
+Expected: Successful build in `dist/` directory.
+
+- [ ] **Step 2: Commit final changes**
+
+```bash
+git commit -m "chore: final polish and build verification"
+```
+</file>
+
+<file path="docs/superpowers/specs/2026-04-03-personal-website-design.md">
+# Design Spec: Personal Website for Rahul Sannapureddy
+
+**Date:** 2026-04-03
+**Author:** Gemini CLI
+**Status:** Draft (Pending User Review)
+
+## 1. Overview
+A personal website for Rahul Sannapureddy, a computer science student at IIT Guwahati. The site will showcase his projects, blog posts, and bio, with a focus on a professional, technical, and minimalist aesthetic.
+
+### Goals
+- Professional online presence for a CS student.
+- Easy to update with new projects and blog posts.
+- High performance and clean design.
+- Hosted on GitHub Pages.
+
+## 2. Visual Design: Minimalist Timeline
+- **Style:** Minimalist & Clean with a "Timeline" feel on the homepage.
+- **Typography:** A mix of clean Sans-Serif (for headers) and Monospaced (for technical details/timeline elements).
+- **Color Palette:** High contrast (likely white background with dark text) with subtle accent colors (e.g., a single professional blue or green).
+- **Key Visual Elements:** Thin vertical lines for the timeline, clear spacing, and high-quality typography.
+
+## 3. Site Structure
+A multi-page site for better organization and scalability.
+
+### Pages:
+1. **Homepage (`/`):**
+   - Header with Navigation.
+   - Brief Bio / About Me.
+   - Vertical "Timeline" showing recent milestones (e.g., "Started at IITG", "Launched X Project").
+   - Footer with social links (GitHub, LinkedIn, Email).
+2. **Projects (`/projects`):**
+   - A dedicated list or grid of all projects.
+   - Each project has a title, description, tech stack, and links (GitHub/Demo).
+3. **Blog (`/blog`):**
+   - A list of blog posts with dates and summaries.
+   - Individual blog post pages.
+
+### Future Expansion (Out of Scope for now):
+- **Education & Skills:** Dedicated pages to be added later.
+
+## 4. Technical Stack
+- **Framework:** [Astro](https://astro.build/) (Static Site Generator).
+- **Language:** TypeScript.
+- **Styling:** Vanilla CSS (no external CSS frameworks like Tailwind for maximum control and performance).
+- **Content:** Markdown (`.md`) for projects and blog posts.
+- **Hosting:** GitHub Pages.
+
+## 5. Components & Data Flow
+- **Components:**
+  - `Navigation.astro`: Shared header navigation.
+  - `TimelineItem.astro`: Reusable vertical timeline element.
+  - `ProjectCard.astro`: Card component for projects.
+  - `Footer.astro`: Shared site footer.
+  - `Layout.astro`: Base layout wrapper.
+- **Content Collections:**
+  - `src/content/projects/`: Individual markdown files for projects.
+  - `src/content/blog/`: Individual markdown files for blog posts.
+- **Data Fetching:** Astro's `getCollection` API to fetch and sort content.
+
+## 6. Testing & Validation
+- **Local Preview:** Use `npm run dev` for development.
+- **Build Verification:** Run `npm run build` to ensure the site compiles correctly.
+- **Accessibility:** Ensure high contrast ratios and semantic HTML.
+- **Mobile Responsive:** Layout must work seamlessly on mobile and desktop.
+</file>
+
+<file path="docs/superpowers/tasks.md">
+# Brainstorming Tasks
+
+- [x] Explore project context
+- [x] Offer visual companion
+- [x] Ask clarifying questions
+- [x] Propose 2-3 approaches
+- [x] Present design
+- [x] Write design doc
+- [x] Spec self-review
+- [x] User reviews written spec
+- [x] Transition to implementation
+</file>
+
+<file path="docs/superpowers/todos.md">
+# Tasks
+
+- [x] Task 1: Initialize Astro Project
+- [x] Task 2: Global Styles and Base Layout
+- [x] Task 3: Core Components (Navigation & Footer)
+- [x] Task 4: Content Collections Setup
+- [x] Task 5: Homepage with Timeline
+- [x] Task 6: Projects Page
+- [x] Task 7: Blog Listing and Post Pages
+- [x] Task 8: Final Polish and Build
+</file>
+
+<file path="public/favicon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 128 128">
+    <path d="M50.4 78.5a75.1 75.1 0 0 0-28.5 6.9l24.2-65.7c.7-2 1.9-3.2 3.4-3.2h29c1.5 0 2.7 1.2 3.4 3.2l24.2 65.7s-11.6-7-28.5-7L67 45.5c-.4-1.7-1.6-2.8-2.9-2.8-1.3 0-2.5 1.1-2.9 2.7L50.4 78.5Zm-1.1 28.2Zm-4.2-20.2c-2 6.6-.6 15.8 4.2 20.2a17.5 17.5 0 0 1 .2-.7 5.5 5.5 0 0 1 5.7-4.5c2.8.1 4.3 1.5 4.7 4.7.2 1.1.2 2.3.2 3.5v.4c0 2.7.7 5.2 2.2 7.4a13 13 0 0 0 5.7 4.9v-.3l-.2-.3c-1.8-5.6-.5-9.5 4.4-12.8l1.5-1a73 73 0 0 0 3.2-2.2 16 16 0 0 0 6.8-11.4c.3-2 .1-4-.6-6l-.8.6-1.6 1a37 37 0 0 1-22.4 2.7c-5-.7-9.7-2-13.2-6.2Z" />
+    <style>
+        path { fill: #000; }
+        @media (prefers-color-scheme: dark) {
+            path { fill: #FFF; }
+        }
+    </style>
+</svg>
+</file>
+
+<file path="src/components/Footer.astro">
+<footer>
+  <div class="container">
+    <p>&copy; 2026 Rahul Sannapureddy</p>
+    <div class="links">
+      <a href="https://github.com/RahulSannapureddy" target="_blank" rel="noopener noreferrer">GitHub</a>
+      <a href="https://www.linkedin.com/in/rahulsannapureddy" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+      <a href="mailto:rahul.sannapureddy@gmail.com">Email</a>
+    </div>
+  </div>
+</footer>
+
+<style>
+  footer {
+    margin-top: 4rem;
+    padding: 2rem 0;
+    border-top: 1px solid var(--border);
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+  }
+  .links {
+    display: flex;
+    gap: 1.5rem;
+  }
+  a {
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+  }
+  a:hover {
+    color: var(--accent);
+  }
+</style>
+</file>
+
+<file path="src/components/Navigation.astro">
+<nav>
+  <div class="container">
+    <a href="/" class="logo">RS</a>
+    <div class="links">
+      <a href="/">Home</a>
+      <a href="/projects">Projects</a>
+      <a href="/blog">Blog</a>
+    </div>
+  </div>
+</nav>
+
+<style>
+  nav {
+    padding: 2rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo {
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: var(--accent);
+  }
+  .links {
+    display: flex;
+    gap: 2rem;
+  }
+  a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    transition: color 0.2s ease;
+  }
+  a:hover {
+    color: var(--accent);
+  }
+</style>
+</file>
+
+<file path="src/components/ProjectCard.astro">
+---
+interface Props {
+	title: string;
+	description: string;
+	tags?: string[];
+	slug: string;
+}
+
+const { title, description, tags, slug } = Astro.props;
+---
+<a href={`/projects/${slug}`} class="project-card">
+	<h3>{title}</h3>
+	<p>{description}</p>
+	{tags && (
+		<div class="tags">
+			{tags.map(tag => <span>{tag}</span>)}
+		</div>
+	)}
+</a>
+
+<style>
+	.project-card { 
+		display: block; 
+		padding: 1.5rem; 
+		border: 1px solid var(--border); 
+		text-decoration: none; 
+		color: inherit; 
+		transition: border-color 0.2s; 
+		border-radius: 8px;
+		margin-bottom: 1rem;
+	}
+	.project-card:hover { border-color: var(--accent); }
+	h3 { margin-bottom: 0.5rem; }
+	p { color: var(--text-muted); font-size: 0.95rem; }
+	.tags { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+	.tags span { font-family: var(--font-mono); font-size: 0.8rem; background: #f0f0f0; padding: 0.2rem 0.5rem; border-radius: 4px; }
+</style>
+</file>
+
+<file path="src/components/TimelineItem.astro">
+---
+interface Props {
+	date: string;
+	title: string;
+	description: string;
+}
+
+const { date, title, description } = Astro.props;
+---
+<div class="timeline-item">
+	<div class="date">{date}</div>
+	<div class="content">
+		<h3>{title}</h3>
+		<p>{description}</p>
+	</div>
+</div>
+
+<style>
+	.timeline-item { display: flex; gap: 2rem; margin-bottom: 2rem; position: relative; }
+	.timeline-item::before { content: ""; position: absolute; left: 5rem; top: 0; bottom: -2rem; width: 1px; background: var(--border); }
+	.date { width: 4rem; text-align: right; font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-muted); }
+	.content { flex: 1; padding-left: 1rem; }
+	h3 { font-size: 1.1rem; margin-bottom: 0.25rem; }
+	p { color: var(--text-muted); }
+</style>
+</file>
+
+<file path="src/content/blog/hello-world.md">
+---
+title: "Hello World"
+description: "Welcome to my new personal website!"
+pubDate: "Apr 03 2026"
+---
+This is the first post on my new blog. Stay tuned for more updates!
+</file>
+
+<file path="src/content/projects/placeholder.md">
+---
+title: "Personal Website"
+description: "My personal portfolio built with Astro and Vanilla CSS."
+pubDate: "Apr 03 2026"
+tags: ["Astro", "TypeScript", "CSS"]
+---
+A minimalist, timeline-based website showcasing my journey as a CS student.
+</file>
+
+<file path="src/layouts/Layout.astro">
+---
+import '../styles/global.css';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+	title: string;
+}
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<title>{title}</title>
+	</head>
+	<body>
+		<Navigation />
+		<main>
+			<slot />
+		</main>
+		<Footer />
+	</body>
+</html>
+
+<style>
+	main {
+		max-width: 800px;
+		margin: 0 auto;
+		padding: 0 1rem;
+		min-height: 80vh;
+	}
+</style>
+</file>
+
+<file path="src/pages/blog/[...slug].astro">
+---
+import { type CollectionEntry, getCollection, render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: post,
+	}));
+}
+type Props = CollectionEntry<'blog'>;
+
+const post = Astro.props;
+const { Content } = await render(post);
+---
+
+<Layout title={post.data.title}>
+	<article>
+		<header>
+			<p class="date">{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+			<h1>{post.data.title}</h1>
+		</header>
+		<div class="prose">
+			<Content />
+		</div>
+	</article>
+</Layout>
+
+<style>
+	article { padding: 2rem 0; }
+	.date { font-family: var(--font-mono); color: var(--text-muted); }
+	h1 { margin: 0.5rem 0 2rem; }
+	.prose { line-height: 1.8; }
+</style>
+</file>
+
+<file path="src/pages/blog/index.astro">
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Blog | Rahul Sannapureddy">
+	<section>
+		<h1>Blog</h1>
+		<ul class="posts">
+			{posts.map(p => (
+				<li>
+					<span class="date">{p.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+					<a href={`/blog/${p.id}`}>{p.data.title}</a>
+				</li>
+			))}
+		</ul>
+	</section>
+</Layout>
+
+<style>
+	h1 { margin: 2rem 0; }
+	.posts { list-style: none; }
+	li { display: flex; gap: 2rem; margin-bottom: 1rem; }
+	.date { font-family: var(--font-mono); color: var(--text-muted); min-width: 120px; }
+	a { text-decoration: none; color: inherit; font-weight: 500; }
+	a:hover { color: var(--accent); }
+</style>
+</file>
+
+<file path="src/pages/projects/index.astro">
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+
+const projects = (await getCollection('projects')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<Layout title="Projects | Rahul Sannapureddy">
+	<section>
+		<h1>Projects</h1>
+		<div class="grid">
+			{projects.map(p => (
+				<ProjectCard 
+					title={p.data.title} 
+					description={p.data.description} 
+					tags={p.data.tags} 
+					slug={p.id} 
+				/>
+			))}
+		</div>
+	</section>
+</Layout>
+
+<style>
+	h1 { margin: 2rem 0; }
+	.grid { display: grid; gap: 1.5rem; }
+</style>
+</file>
+
+<file path="src/pages/index.astro">
+---
+import Layout from '../layouts/Layout.astro';
+import TimelineItem from '../components/TimelineItem.astro';
+---
+
+<Layout title="Rahul Sannapureddy | Personal Website">
+	<section class="hero">
+		<h1>Rahul Sannapureddy</h1>
+		<p class="subtitle">CS Student at IIT Guwahati</p>
+		<p>Passionate about building efficient systems and elegant software.</p>
+	</section>
+
+	<section class="timeline">
+		<h2>Timeline</h2>
+		<TimelineItem 
+			date="2026" 
+			title="Launched Personal Website" 
+			description="Built with Astro and Vanilla CSS." 
+		/>
+		<TimelineItem 
+			date="2024" 
+			title="Started at IIT Guwahati" 
+			description="Pursuing B.Tech in Computer Science and Engineering." 
+		/>
+	</section>
+</Layout>
+
+<style>
+	.hero { padding: 4rem 0; }
+	h1 { font-size: 3rem; margin-bottom: 0.5rem; }
+	.subtitle { font-size: 1.5rem; color: var(--text-muted); margin-bottom: 1rem; }
+	.timeline { padding: 2rem 0; }
+	h2 { margin-bottom: 2rem; }
+</style>
+</file>
+
+<file path="src/styles/global.css">
+:root {
+  --bg: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #666;
+  --accent: #2563eb;
+  --border: #eeeeee;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+}
+</file>
+
+<file path="src/content.config.ts">
+import { defineCollection, z } from 'astro:content';
+import { glob } from 'astro/loaders';
+
+const blog = defineCollection({
+	loader: glob({ pattern: '**/[^_]*.md', base: './src/content/blog' }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		pubDate: z.coerce.date(),
+		updatedDate: z.coerce.date().optional(),
+		heroImage: z.string().optional(),
+	}),
+});
+
+const projects = defineCollection({
+	loader: glob({ pattern: '**/[^_]*.md', base: './src/content/projects' }),
+	schema: z.object({
+		title: z.string(),
+		description: z.string(),
+		pubDate: z.coerce.date(),
+		heroImage: z.string().optional(),
+		tags: z.array(z.string()).optional(),
+	}),
+});
+
+export const collections = { blog, projects };
+</file>
+
+<file path=".gitignore">
+Agents.md
+GEMINI.md
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+.astro/
+
+# Environment variables
+.env
+.env*.local
+.env.production
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# System files
+.DS_Store
+
+# Jetbrains setting folder
+.idea/
+.superpowers/
+</file>
+
+<file path=".nojekyll">
+
+</file>
+
+<file path="astro.config.mjs">
+import { defineConfig } from 'astro/config';
+
+export default defineConfig({
+  // Use your exact GitHub URL
+  site: 'https://RahulSannapureddy.github.io',
+  // For username.github.io repos, base must be '/'
+  base: '/', 
+});
+</file>
+
+<file path="package.json">
+{
+  "name": "rahulsannapureddy.github.io",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "astro": "^6.1.3"
+  }
+}
+</file>
+
+<file path="README.md">
+# Astro Starter Kit: Minimal
+
+```sh
+npm create astro@latest -- --template minimal
+```
+
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+
+## 🚀 Project Structure
+
+Inside of your Astro project, you'll see the following folders and files:
+
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
+```
+
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+
+Any static assets, like images, can be placed in the `public/` directory.
+
+## 🧞 Commands
+
+All commands are run from the root of the project, from a terminal:
+
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `npm install`             | Installs dependencies                            |
+| `npm run dev`             | Starts local dev server at `localhost:4321`      |
+| `npm run build`           | Build your production site to `./dist/`          |
+| `npm run preview`         | Preview your build locally, before deploying     |
+| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `npm run astro -- --help` | Get help using the Astro CLI                     |
+
+## 👀 Want to learn more?
+
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+</file>
+
+<file path="tsconfig.json">
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": [".astro/types.d.ts", "**/*"],
+  "exclude": ["dist"]
+}
+</file>
+
+</files>
