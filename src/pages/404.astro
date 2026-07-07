@@ -1,0 +1,47 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout title="Page Not Found | Rahul Sannapureddy" description="The page you're looking for doesn't exist.">
+	<section class="not-found">
+		<h1>404</h1>
+		<p>The page you're looking for doesn't exist.</p>
+		<a href="/" class="home-link">&larr; Back to Home</a>
+	</section>
+</Layout>
+
+<style>
+	.not-found {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		min-height: 60vh;
+		gap: 1rem;
+	}
+	h1 {
+		font-size: 6rem;
+		font-weight: 700;
+		color: var(--accent);
+		line-height: 1;
+	}
+	p {
+		font-size: 1.2rem;
+		color: var(--text-muted);
+	}
+	.home-link {
+		margin-top: 1rem;
+		text-decoration: none;
+		color: var(--accent);
+		font-weight: 500;
+		padding: 0.5rem 1.5rem;
+		border: 1px solid var(--accent);
+		border-radius: 6px;
+		transition: background-color 0.2s ease, color 0.2s ease;
+	}
+	.home-link:hover {
+		background: var(--accent);
+		color: var(--bg);
+	}
+</style>
