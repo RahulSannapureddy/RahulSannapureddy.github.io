@@ -16,6 +16,7 @@ const { Content } = await render(project);
 ---
 
 <Layout title={`${project.data.title} | Rahul Sannapureddy`} description={project.data.description}>
+	<a href="/projects" class="back-link">&larr; All projects</a>
 	<article>
 		<header>
 			<h1>{project.data.title}</h1>
@@ -34,7 +35,9 @@ const { Content } = await render(project);
 </Layout>
 
 <style>
-	article { padding: 2rem 0; }
+	.back-link { display: inline-block; margin-top: 2rem; text-decoration: none; color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s ease; }
+	.back-link:hover { color: var(--accent); }
+	article { padding: 1rem 0 2rem; }
 	header { margin-bottom: 2rem; }
 	h1 { margin-bottom: 0.5rem; }
 	.description { font-size: 1.2rem; color: var(--text-muted); margin-bottom: 1rem; }

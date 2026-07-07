@@ -16,6 +16,7 @@ const { Content } = await render(post);
 ---
 
 <Layout title={post.data.title} description={post.data.description}>
+	<a href="/blog" class="back-link">&larr; All posts</a>
 	<article>
 		<header>
 			<p class="date">{post.data.pubDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
@@ -28,7 +29,9 @@ const { Content } = await render(post);
 </Layout>
 
 <style>
-	article { padding: 2rem 0; }
+	.back-link { display: inline-block; margin-top: 2rem; text-decoration: none; color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s ease; }
+	.back-link:hover { color: var(--accent); }
+	article { padding: 1rem 0 2rem; }
 	.date { font-family: var(--font-mono); color: var(--text-muted); }
 	h1 { margin: 0.5rem 0 2rem; }
 	.prose { line-height: 1.8; }
