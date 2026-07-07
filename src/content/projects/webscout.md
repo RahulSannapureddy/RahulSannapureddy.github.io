@@ -5,7 +5,7 @@ pubDate: "Jan 15 2026"
 tags: ["C++", "Python", "Flask", "BM25", "Search Engine"]
 ---
 
-[GitHub Repository](https://github.com/RahulSannapureddy/WebScout)
+[GitHub Repository](https://github.com/RahulSannapureddy/Indexer)
 
 # Building a Search Engine From Scratch: How WebScout Works Under the Hood
 
