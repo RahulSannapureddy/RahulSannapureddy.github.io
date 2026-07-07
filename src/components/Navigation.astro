@@ -1,6 +1,12 @@
 <nav>
   <div class="container">
     <a href="/" class="logo">RS</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation" />
+    <label for="nav-toggle" class="nav-toggle-label">
+      <span></span>
+      <span></span>
+      <span></span>
+    </label>
     <div class="links">
       <a href="/">Home</a>
       <a href="/projects">Projects</a>
@@ -21,6 +27,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
   }
   .logo {
     font-weight: 700;
@@ -39,5 +46,56 @@
   }
   a:hover {
     color: var(--accent);
+  }
+
+  /* Hamburger toggle — hidden by default */
+  .nav-toggle {
+    display: none;
+  }
+  .nav-toggle-label {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 0.5rem;
+  }
+  .nav-toggle-label span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+
+  /* Mobile: show hamburger, collapse links */
+  @media (max-width: 600px) {
+    .nav-toggle-label {
+      display: flex;
+    }
+    .links {
+      display: none;
+      flex-direction: column;
+      width: 100%;
+      gap: 0;
+      padding-top: 1rem;
+    }
+    .links a {
+      padding: 0.75rem 0;
+      border-top: 1px solid var(--border);
+    }
+    .nav-toggle:checked ~ .links {
+      display: flex;
+    }
+    /* Animate hamburger to X */
+    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(1) {
+      transform: translateY(7px) rotate(45deg);
+    }
+    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(2) {
+      opacity: 0;
+    }
+    .nav-toggle:checked ~ .nav-toggle-label span:nth-child(3) {
+      transform: translateY(-7px) rotate(-45deg);
+    }
   }
 </style>
