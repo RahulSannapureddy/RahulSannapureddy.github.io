@@ -7,6 +7,12 @@
   --tag-bg: #f0f0f0;
   --font-sans: 'Inter', system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
+  --h1: #1e3a8a;
+  --h2: #1e40af;
+  --h3: #1d4ed8;
+  --h4: #2563eb;
+  --h5: #3b82f6;
+  --h6: #60a5fa;
 }
 
 :root.dark {
@@ -16,6 +22,12 @@
   --accent: #60a5fa;
   --border: #2a2a2a;
   --tag-bg: #1e1e1e;
+  --h1: #bfdbfe;
+  --h2: #93c5fd;
+  --h3: #60a5fa;
+  --h4: #3b82f6;
+  --h5: #2563eb;
+  --h6: #1d4ed8;
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }

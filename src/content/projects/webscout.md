@@ -15,7 +15,7 @@ This post walks through every part of the system: how the data gets collected, h
 
 ## The Big Picture
 
-WebScout is a pipeline. There are four stages, and each one runs independently. They communicate through the file system (just files and folders in a [`data/`](https://github.com/RahulSannapureddy/Indexer/tree/main/data) directory), which means you can run the crawler once, then re-run the parser if you change something, and the search engine will pick up whatever is sitting in the processed files when it starts.
+WebScout is a pipeline. There are four stages, and each one runs independently. They communicate through the file system (just files and folders in a `data/` directory), which means you can run the crawler once, then re-run the parser if you change something, and the search engine will pick up whatever is sitting in the processed files when it starts.
 
 Here is the flow:
 
@@ -40,11 +40,11 @@ The seed URL is the Simple Wikipedia page for Formula One. From there, the crawl
 
 Wikipedia URLs can have fragments (the `#section-name` part). Two URLs that differ only by fragment point to the same page, so the crawler strips fragments before adding anything to its queue. It also tracks URLs it has already seen in a `set`, so it never visits the same page twice.
 
-For filenames, the crawler takes the URL and runs it through SHA-256 hashing. So `https://simple.wikipedia.org/wiki/Formula_One` becomes something like `a3f8c...e21.html`. This avoids dealing with special characters in filenames and guarantees uniqueness. The mapping between hash-filenames and their original URLs is saved in a CSV file called [`url_mapping.csv`](https://github.com/RahulSannapureddy/Indexer/blob/main/url_mapping.csv).
+For filenames, the crawler takes the URL and runs it through SHA-256 hashing. So `https://simple.wikipedia.org/wiki/Formula_One` becomes something like `a3f8c...e21.html`. This avoids dealing with special characters in filenames and guarantees uniqueness. The mapping between hash-filenames and their original URLs is saved in a CSV file called `url_mapping.csv`.
 
 ### Persistence and Politeness
 
-The crawler saves its BFS queue to a file ([`queue.txt`](https://github.com/RahulSannapureddy/Indexer/blob/main/queue.txt)) every time it finishes or gets interrupted (it catches `KeyboardInterrupt`). When you restart it, it picks up right where it left off by reloading the queue and checking which hash-files already exist on disk.
+The crawler saves its BFS queue to a file (`queue.txt`) every time it finishes or gets interrupted (it catches `KeyboardInterrupt`). When you restart it, it picks up right where it left off by reloading the queue and checking which hash-files already exist on disk.
 
 It also waits one second between requests (`time.sleep(1)`) and uses a custom User-Agent string (`IndexerBot/1.0 (educational purposes)`). This is basic web crawling etiquette. You do not want to hammer a server with hundreds of requests per second.
 
@@ -66,15 +66,15 @@ Within that div, it pulls out all `<p>` tags and joins their text together. It a
 
 The parser writes two versions of every document:
 
-1. **Display text** ([`data/processed_docs/display/000042.txt`](https://github.com/RahulSannapureddy/Indexer/blob/main/data/processed_docs/display/000042.txt)): This is the cleaned-up, human-readable version. Paragraphs are preserved, capitalization is untouched. This is what you would show the user if they clicked on a result.
+1. **Display text** (eg: `data/processed_docs/display/000042.txt`): This is the cleaned-up, human-readable version. Paragraphs are preserved, capitalization is untouched. This is what you would show the user if they clicked on a result.
 
-2. **Index text** ([`data/processed_docs/index/000042.txt`](https://github.com/RahulSannapureddy/Indexer/blob/main/data/processed_docs/index/000042.txt)): This is the version the search engine actually reads. It has been lowercased, stripped of all punctuation, and filtered to remove stopwords (common words like "the", "is", "and" that appear in almost every document and are not useful for distinguishing relevant results).
+2. **Index text** (eg: `data/processed_docs/index/000042.txt`): This is the version the search engine actually reads. It has been lowercased, stripped of all punctuation, and filtered to remove stopwords (common words like "the", "is", "and" that appear in almost every document and are not useful for distinguishing relevant results).
 
 The parser also handles possessives, replacing curly apostrophes with straight ones and stripping `'s` endings before tokenizing.
 
 ### Metadata
 
-A CSV file ([`metadata.csv`](https://github.com/RahulSannapureddy/Indexer/blob/main/metadata.csv)) maps each document's numeric ID to its original URL and the hash-filename from the crawler. This is how the search engine knows which URL to show the user when it finds a match. Document IDs are zero-padded to six digits (like `000042`), which keeps the filenames sortable and consistent.
+A CSV file (`metadata.csv`) maps each document's numeric ID to its original URL and the hash-filename from the crawler. This is how the search engine knows which URL to show the user when it finds a match. Document IDs are zero-padded to six digits (like `000042`), which keeps the filenames sortable and consistent.
 
 ## Stage 3: The Inverted Index
 
@@ -229,7 +229,7 @@ No project is perfect, and this one has some specific rough edges worth mentioni
 
 **No snippet generation.** The results page shows document IDs and URLs but no text preview. A real search engine would show a short snippet of the matching text to help users decide which result to click. The display-text files exist for this purpose, but the feature is not wired up yet.
 
-**Hardcoded paths.** Most file paths in the project are relative to the repo root (like [`data/processed_docs/metadata.csv`](https://github.com/RahulSannapureddy/Indexer/blob/main/data/processed_docs/metadata.csv)). This works as long as you run everything from the right directory, but it is fragile. A more robust setup would use configuration files or environment variables.
+**Hardcoded paths.** Most file paths in the project are relative to the repo root (like `data/processed_docs/metadata.csv`). This works as long as you run everything from the right directory, but it is fragile. A more robust setup would use configuration files or environment variables.
 
 ## Wrapping Up
 
