@@ -23,4 +23,15 @@ const projects = defineCollection({
 	}),
 });
 
-export const collections = { blog, projects };
+const timeline = defineCollection({
+	loader: glob({ pattern: '**/[^_]*.json', base: './src/content/timeline' }),
+	schema: z.object({
+		date: z.string(),
+		title: z.string(),
+		description: z.string(),
+		sortOrder: z.number(),
+		link: z.string().optional(),
+	}),
+});
+
+export const collections = { blog, projects, timeline };

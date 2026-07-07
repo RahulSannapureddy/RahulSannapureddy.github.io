@@ -1,6 +1,11 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../layouts/Layout.astro';
 import TimelineItem from '../components/TimelineItem.astro';
+
+const timelineEntries = (await getCollection('timeline')).sort(
+	(a, b) => a.data.sortOrder - b.data.sortOrder
+);
 ---
 
 <Layout title="Rahul Sannapureddy | Personal Website">
@@ -12,22 +17,14 @@ import TimelineItem from '../components/TimelineItem.astro';
 
 	<section class="timeline">
 		<h2>Timeline</h2>
-		<TimelineItem 
-			date="2026" 
-			title="Launched Personal Website" 
-			description="Built with Astro and Vanilla CSS." 
-			link="/projects/placeholder"
-		/>
-		<TimelineItem 
-			date="2025-26" 
-			title="Developed Indexer" 
-			description="A high-performance search engine with a C++ core and Python crawler (Dec 2025 - Jan 2026)." 
-			link="/projects/indexer"
-		/>		<TimelineItem 
-			date="2024" 
-			title="Started at IIT Guwahati" 
-			description="Pursuing B.Tech in Computer Science and Engineering." 
-		/>
+		{timelineEntries.map(entry => (
+			<TimelineItem 
+				date={entry.data.date} 
+				title={entry.data.title} 
+				description={entry.data.description} 
+				link={entry.data.link}
+			/>
+		))}
 	</section>
 </Layout>
 
