@@ -5,7 +5,7 @@ pubDate: "Jan 15 2026"
 tags: ["C++", "Python", "Flask", "BM25", "Search Engine"]
 ---
 
-[GitHub Repository](https://github.com/RahulSannapureddy/Indexer)
+[GitHub Repository](https://github.com/RahulSannapureddy/WebScout)
 
 # Building a Search Engine From Scratch: How WebScout Works Under the Hood
 
@@ -28,7 +28,7 @@ This kind of design is sometimes called a "decoupled pipeline." The big advantag
 
 ## Stage 1: The Crawler
 
-The crawler lives in [`src/crawler/crawler.py`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/crawler/crawler.py). Its job is simple: start from a seed URL and explore Wikipedia link by link, saving each page's HTML to disk.
+The crawler lives in [`src/crawler/crawler.py`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/crawler/crawler.py). Its job is simple: start from a seed URL and explore Wikipedia link by link, saving each page's HTML to disk.
 
 ### How It Explores
 
@@ -46,7 +46,7 @@ For filenames, the crawler takes the URL and runs it through SHA-256 hashing. So
 
 The crawler saves its BFS queue to a file (`queue.txt`) every time it finishes or gets interrupted (it catches `KeyboardInterrupt`). When you restart it, it picks up right where it left off by reloading the queue and checking which hash-files already exist on disk.
 
-It also waits one second between requests (`time.sleep(1)`) and uses a custom User-Agent string (`IndexerBot/1.0 (educational purposes)`). This is basic web crawling etiquette. You do not want to hammer a server with hundreds of requests per second.
+It also waits one second between requests (`time.sleep(1)`) and uses a custom User-Agent string (`WebScoutBot/1.0 (educational purposes)`). This is basic web crawling etiquette. You do not want to hammer a server with hundreds of requests per second.
 
 ### Filtering
 
@@ -58,7 +58,7 @@ Once the crawler finishes, you have a folder full of raw HTML files. These are c
 
 ### Extracting the Content
 
-The parser ([`src/parser/parser.py`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/parser/parser.py)) opens each HTML file and uses BeautifulSoup to find the `div` with `id="mw-content-text"`. This is the div that contains the actual article body on Wikipedia pages. Everything else (the sidebar, the header, the footer) gets thrown away.
+The parser ([`src/parser/parser.py`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/parser/parser.py)) opens each HTML file and uses BeautifulSoup to find the `div` with `id="mw-content-text"`. This is the div that contains the actual article body on Wikipedia pages. Everything else (the sidebar, the header, the footer) gets thrown away.
 
 Within that div, it pulls out all `<p>` tags and joins their text together. It also strips citation markers like `[1]` and `[23]` using a regex.
 
@@ -78,7 +78,7 @@ A CSV file (`metadata.csv`) maps each document's numeric ID to its original URL 
 
 ## Stage 3: The Inverted Index
 
-This is where things get interesting. The inverted index is the core data structure that makes search fast. It lives in [`src/engine_cpp/inverted_index.cpp`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/engine_cpp/inverted_index.cpp) and [`inverted_index.h`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/engine_cpp/inverted_index.h), and it is written in C++ for performance.
+This is where things get interesting. The inverted index is the core data structure that makes search fast. It lives in [`src/engine_cpp/inverted_index.cpp`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/engine_cpp/inverted_index.cpp) and [`inverted_index.h`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/engine_cpp/inverted_index.h), and it is written in C++ for performance.
 
 ### What Is an Inverted Index?
 
@@ -146,7 +146,7 @@ The intuition: if a term is rare (high IDF) and appears many times in a short do
 
 ### How the Ranker Works in Code
 
-The `Ranker` class ([`src/engine_cpp/ranking.cpp`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/engine_cpp/ranking.cpp)) takes a query string and does the following:
+The `Ranker` class ([`src/engine_cpp/ranking.cpp`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/engine_cpp/ranking.cpp)) takes a query string and does the following:
 
 1. Tokenizes the query by splitting on whitespace and punctuation.
 2. Lowercases each token.
@@ -163,7 +163,7 @@ One small optimization: the `Ranker` pre-allocates a `std::string` with `reserve
 
 The interesting engineering challenge is that the search core is written in C++ but the web server is written in Python. These two need to talk to each other.
 
-The solution is straightforward: the Flask app ([`src/ui/app.py`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/ui/app.py)) launches the compiled C++ binary as a subprocess when the server starts. It keeps the process alive for the entire lifetime of the server, communicating through stdin and stdout pipes.
+The solution is straightforward: the Flask app ([`src/ui/app.py`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/ui/app.py)) launches the compiled C++ binary as a subprocess when the server starts. It keeps the process alive for the entire lifetime of the server, communicating through stdin and stdout pipes.
 
 ### The Protocol
 
@@ -183,9 +183,9 @@ The downside is that you are limited to text-based communication over pipes, whi
 
 ## The Frontend
 
-The UI is minimal. There is a single HTML page ([`src/ui/templates/index.html`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/ui/templates/index.html)) with a text input, a search button, and a results container. The CSS gives it a clean, Google-style look with a rounded search bar and a blue button.
+The UI is minimal. There is a single HTML page ([`src/ui/templates/index.html`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/ui/templates/index.html)) with a text input, a search button, and a results container. The CSS gives it a clean, Google-style look with a rounded search bar and a blue button.
 
-The JavaScript ([`src/ui/static/script.js`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/ui/static/script.js)) does a few things:
+The JavaScript ([`src/ui/static/script.js`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/ui/static/script.js)) does a few things:
 
 1. When the user clicks "Search" or presses Enter, it sends a GET request to `/search?q=your+query`.
 2. It displays a "Searching..." message while waiting.
@@ -199,11 +199,11 @@ The project includes two dedicated benchmark programs alongside the main engine.
 
 ### Index Build Time
 
-The [`index_benchmark.cpp`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/engine_cpp/index_benchmark.cpp) program measures how long it takes to load metadata, read 1,100 text files from disk, tokenize them, build the inverted index, and compute IDF values. Across 50 runs, the average was about 141.6 ms. Most of that time is disk I/O (reading files), not computation.
+The [`index_benchmark.cpp`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/engine_cpp/index_benchmark.cpp) program measures how long it takes to load metadata, read 1,100 text files from disk, tokenize them, build the inverted index, and compute IDF values. Across 50 runs, the average was about 141.6 ms. Most of that time is disk I/O (reading files), not computation.
 
 ### Query Latency
 
-The [`query_benchmark.cpp`](https://github.com/RahulSannapureddy/Indexer/blob/main/src/engine_cpp/query_benchmark.cpp) program loads the index, warms up with 10 queries, and then runs 1,000 iterations of the same query to measure pure ranking time. Results:
+The [`query_benchmark.cpp`](https://github.com/RahulSannapureddy/WebScout/blob/main/src/engine_cpp/query_benchmark.cpp) program loads the index, warms up with 10 queries, and then runs 1,000 iterations of the same query to measure pure ranking time. Results:
 
 | Query                    | Average Latency  |
 |:-------------------------|:-----------------|
