@@ -6,7 +6,7 @@ tags: ["FPGA", "Verilog", "C++", "Hardware", "Regex"]
 ---
 # Building an FPGA-Accelerated Regex Engine from Scratch
 
-This is a write-up about our team's course project (Group 6) for our digital systems class. This was a graded group project where the whole team contributed across hardware design, compiler development, and tooling. Together, we built a hardware accelerator that runs regular expression matching on an FPGA instead of a CPU. The short version: we wrote a C++ compiler that reads regex patterns and spits out synthesizable Verilog code, which then runs on a Nexys A7 FPGA board and matches text at one character per clock cycle. We also built a second approach using a custom soft-processor that lets you swap regex patterns at runtime without having to re-synthesize anything. Here is how all of it works.
+This is a write-up about our team's course project for our hardware lab course. This was a graded group project where the whole team contributed across hardware design, compiler development, and tooling. Together, we built a hardware accelerator that runs regular expression matching on an FPGA instead of a CPU. The short version: we wrote a C++ compiler that reads regex patterns and spits out synthesizable Verilog code, which then runs on a Nexys A7 FPGA board and matches text at one character per clock cycle. We also built a second approach using a custom soft-processor that lets you swap regex patterns at runtime without having to re-synthesize anything. Here is how all of it works.
 
 ## Why Put Regex on an FPGA?
 
