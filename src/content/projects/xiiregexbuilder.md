@@ -1,4 +1,4 @@
-﻿---
+---
 title: "Building an FPGA-Accelerated Regex Engine from Scratch"
 description: "A course project where we built a hardware accelerator that runs regular expression matching on an FPGA."
 pubDate: "Apr 30 2026"
@@ -28,7 +28,11 @@ Both modes talk to the host PC over USB-UART at 115200 baud, and we wrote Python
 
 Let us walk through each part.
 
+<br>
+
 ---
+
+<br>
 
 ## The Static Engine: From Regex String to Silicon
 
@@ -129,7 +133,11 @@ The UART transmitter (`uart_tx.v`) is a standard 8-N-1 serial transmitter module
 
 **How the FIFO Works**: The FIFO uses distributed RAM (a 16-entry register file) with separate read and write pointers. The UART receiver writes incoming bytes at the RX clock rate, and the engine FSM reads them out at its own pace. This is necessary because the NFA engine might be busy serializing a response packet when new bytes arrive. Without the FIFO, those bytes would be lost.
 
+<br>
+
 ---
+
+<br>
 
 ## The Response Packet Protocol
 
@@ -149,7 +157,11 @@ The `MATCH` field is a bitmask (one bit per regex, LSB = regex 0). `BYTES` is th
 
 You can also send a `?` character at any time to query the current counters without feeding any data to the NFA engine.
 
+<br>
+
 ---
+
+<br>
 
 ## The Processor Engine: Dynamic Regex Matching
 
@@ -203,7 +215,11 @@ The "assembler" for this CPU is a two-stage Python pipeline:
 
 The top-level also drives on-board LEDs to show match status and the current mode, which is helpful for debugging on the actual hardware.
 
+<br>
+
 ---
+
+<br>
 
 ## The Terminal UIs
 
@@ -228,7 +244,11 @@ Similar to `engine.py` but tailored for the processor-based engine. The protocol
 
 A specialized TUI for the PII (Personally Identifiable Information) detection use case. It reads lines from a demo input file containing fake personal data and feeds them to the FPGA, showing which PII patterns (SSN, email, credit card, phone number, date of birth, IP address) were detected in each line.
 
+<br>
+
 ---
+
+<br>
 
 ## The PII Guard Use Case
 
@@ -243,7 +263,11 @@ The `pii/` directory contains a practical application of the engine: detecting s
 
 The idea is that you could deploy this on an FPGA sitting on a network tap, scanning all traffic at wire speed for any of these patterns. If a match is found, the system could flag or redact the data before it leaves the network. The `pii_demo.py` TUI demonstrates this by feeding sample records and highlighting which fields contain PII.
 
+<br>
+
 ---
+
+<br>
 
 ## Testing and Verification
 
@@ -263,7 +287,11 @@ This is a solid validation strategy because `std::regex` is a well-tested implem
 
 The Makefile includes a `sim` target that runs the generated testbench through Vivado's simulator (xvlog, xelab, xsim). This lets you verify the design in simulation before burning it onto the FPGA, which is standard practice in hardware development.
 
+<br>
+
 ---
+
+<br>
 
 ## How It All Fits Together
 
@@ -283,7 +311,11 @@ For the processor engine, the flow is:
 4. `make proc_update_regex` lets you change patterns and reload them over UART without touching Vivado
 5. You launch `python tui/processor.py` and interact the same way
 
+<br>
+
 ---
+
+<br>
 
 ## Some Thoughts on the Design
 
@@ -297,7 +329,11 @@ The dual-mode architecture (static engine plus soft-processor) is a nice tradeof
 
 The FIFO between the UART receiver and the NFA engine is a small but important detail. Without it, if the engine is busy serializing a response packet back to the host while new characters arrive on the serial port, those characters would be silently dropped. The 16-byte buffer gives the engine enough headroom to finish its transmission before the next batch of input overflows.
 
+<br>
+
 ---
+
+<br>
 
 ## Build and Dependencies
 
@@ -310,7 +346,11 @@ The project requires:
 
 The Makefile handles cross-platform path differences between Windows and Unix, so it should work on both. All the Vivado-specific targets call Vivado in batch mode through TCL scripts in the `scripts/` directory.
 
+<br>
+
 ---
+
+<br>
 
 This project was a significant learning experience for the whole team. Going from a regex string all the way down to flip-flops on an FPGA, through a custom compiler pipeline, taught us a lot about the boundary between software abstractions and hardware reality. The fact that a regular expression, which most people think of as a software concept, maps so naturally onto digital logic is something that still feels a bit wild to all of us.
 
