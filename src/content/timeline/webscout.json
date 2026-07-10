@@ -1,7 +1,7 @@
 {
-	"date": "2025-26",
-	"title": "Developed WebScout",
-	"description": "A high-performance search engine with a C++ core and Python crawler (Dec 2025 - Jan 2026).",
-	"sortOrder": 2,
-	"link": "/projects/webscout"
+    "date": "2025-26",
+    "title": "Developed WebScout",
+    "description": "A high-performance search engine with a C++ core and Python crawler (Dec 2025 - Jan 2026).",
+    "sortOrder": 4,
+    "link": "/projects/webscout"
 }
