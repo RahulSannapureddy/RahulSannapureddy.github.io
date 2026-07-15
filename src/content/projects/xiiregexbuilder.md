@@ -3,6 +3,7 @@ title: "Building an FPGA-Accelerated Regex Engine from Scratch"
 description: "A course project where we built a hardware accelerator that runs regular expression matching on an FPGA."
 pubDate: "Apr 30 2026"
 tags: ["FPGA", "Verilog", "C++", "Hardware", "Regex"]
+githubUrl: "https://github.com/maydayv7/XIIRegexBuilder"
 ---
 # Building an FPGA-Accelerated Regex Engine from Scratch
 

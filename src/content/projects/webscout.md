@@ -3,9 +3,8 @@ title: "WebScout"
 description: "A high-performance search engine project that integrates Python for data collection with C++ for core indexing and ranking logic."
 pubDate: "Jan 15 2026"
 tags: ["C++", "Python", "Flask", "BM25", "Search Engine"]
+githubUrl: "https://github.com/RahulSannapureddy/Indexer"
 ---
-
-[GitHub Repository](https://github.com/RahulSannapureddy/WebScout)
 
 # Building a Search Engine From Scratch: How WebScout Works Under the Hood
 

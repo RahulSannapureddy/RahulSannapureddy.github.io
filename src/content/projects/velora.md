@@ -3,6 +3,7 @@ title: "How We Built VELORA: A Multi-Algorithm Vehicle Routing System That Won G
 description: "A full-stack application and multi-algorithm vehicle routing system built for the KRITI 2026 tech competition."
 pubDate: "Mar 31 2026"
 tags: ["C++", "Next.js", "Optimization", "Algorithms", "React"]
+githubUrl: "https://github.com/Ritesh-Raj-Singh/KRITI-Optimization"
 ---
 
 # How We Built VELORA: A Multi-Algorithm Vehicle Routing System That Won Gold at KRITI 2026
